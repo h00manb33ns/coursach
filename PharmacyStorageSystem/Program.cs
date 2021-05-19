@@ -5,11 +5,18 @@ namespace PharmacyStorageSystem
 {
     class Program
     {
+        /// <summary>
+        /// Точка входа в программу
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
+            Items.Load();
             MenuO();
         }
-
+        /// <summary>
+        /// Метод вывода и навигации по меню
+        /// </summary>
         public static void MenuO()
         {
             Console.Clear();
@@ -19,7 +26,7 @@ namespace PharmacyStorageSystem
                               "2. Посмотреть товары на складе\n" +
                               "3. Удалить товар со склада\n" +
                               "4. Посчитать стоимость всех товаров\n" +
-                              "6. Выход");
+                              "5. Выход");
             switch (Console.ReadLine())
             {
                 
@@ -42,6 +49,8 @@ namespace PharmacyStorageSystem
                     break;
                 case "4":
                     Items.countSum();
+                    break;
+                case "5":
                     break;
                 default:
                     MenuO();
