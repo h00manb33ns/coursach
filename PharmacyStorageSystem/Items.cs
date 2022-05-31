@@ -19,7 +19,7 @@ namespace PharmacyStorageSystem
         public static void Save()
         {
             BinaryFormatter formatter = new BinaryFormatter();
-            FileStream file = File.Open(@"C:\Users\PC\AppData\Roaming" + "/player.dat", FileMode.Create);
+            FileStream file = File.Open(@"C:\Users\Даня\AppData\Roaming" + "/player.dat", FileMode.Create);
             formatter.Serialize(file, items);
             file.Close();
         }
@@ -29,7 +29,7 @@ namespace PharmacyStorageSystem
         public static void Load()
         {
             BinaryFormatter formatter = new BinaryFormatter();
-            FileStream file = File.Open(@"C:\Users\PC\AppData\Roaming" + "/player.dat", FileMode.Open);
+            FileStream file = File.Open(@"C:\Users\Даня\AppData\Roaming" + "/player.dat", FileMode.Open);
             items = (List<Item>) formatter.Deserialize(file);
             file.Close();
         }
@@ -68,12 +68,21 @@ namespace PharmacyStorageSystem
             }
             Console.WriteLine("Выберите товар чтобы узнать о нём поподробнее или нажмите 0 для выхода в меню.");
 
-            int a = Convert.ToInt32(Console.ReadLine());
+            int a = 0;
 
-            if (a == 0)
+            if (!Int32.TryParse(Console.ReadLine(), out a))
             {
                 Program.MenuO();
             }
+
+            if (a <= 0 || a > items.Count())
+            {
+                Console.Clear();
+                Console.WriteLine("Нет такой позиции...");
+                Console.ReadKey();
+                Program.MenuO();
+            }
+
             Console.Clear();
             Console.WriteLine("Наименование: " + items[a-1].name + " \nПроизводитель: " + items[a-1].creator + 
                               "\nЦена: " + items[a-1].price + " Руб.\nУсловия хранения: " + items[a-1].storage);
@@ -95,25 +104,34 @@ namespace PharmacyStorageSystem
                 Program.MenuO();
             }
             Console.Clear();
-            Console.WriteLine("Выберите номер объекта для удаления: ");
+            Console.WriteLine("Выберите номер объекта для удаления (для возврата нажмите Enter): ");
             int i = 1;
             foreach (var item in items)
             {
                 Console.WriteLine(i+". Наименование: " + item.name + "  Производитель: " + item.creator + "  Цена: " + item.price +" Руб.");
                 i++;
             }
-            string id = Console.ReadLine();
-            if (Convert.ToInt32(id) - 1 > items.Count || Convert.ToInt32(id) - 1 < items.Count)
+            int id = 0;
+            if(Int32.TryParse(Console.ReadLine(), out id))
             {
-                Console.Clear();
-                Console.WriteLine("Вы ввели некорректное число");
-                deleteItem();
+                if (id > items.Count || id < 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Вы ввели некорректное число");
+                    Console.ReadKey();
+                    deleteItem();
+                }
+                items.RemoveAt(Convert.ToInt32(id) - 1);
+                Console.WriteLine("Нажмите любую клавишу чтобы продолжить...");
+                Console.ReadKey();
+                Save();
+                Program.MenuO();
             }
-            items.RemoveAt(Convert.ToInt32(id)-1);
-            Console.WriteLine("Нажмите любую клавишу чтобы продолжить...");
-            Console.ReadKey();
-            Save();
-            Program.MenuO();
+            else
+            {
+                Program.MenuO();
+            }
+          
         }
         /// <summary>
         /// Метод счёта суммы всех товаров
